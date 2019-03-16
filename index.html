@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NASA Images</title>
+  <style>
+
+  .textDIV
+  {
+    position: relative;
+    display: inline-block;
+    max-height: 80%;
+    overflow:auto;
+  }
+  .hoverDIV
+  {
+    background-color: rgba(255, 255, 255, 0.7);
+    position:absolute;
+    opacity:0;
+    top:0px;
+    left:0px;
+    right: 0;
+    bottom: 0;
+    font-size: large;
+    font-weight: bold;
+    padding-top: 20%;
+    padding-left: 20%;
+    padding-right: 20%;
+    padding-bottom: 20%;
+    text-align: left;
+    
+  }
+  .item
+  {
+    position:relative;
+    display:inline-block;
+    height: 100%;
+  }
+  #content
+  {
+    text-align: center;
+  }
+  #searchBar
+  {
+    text-align: center;
+  }
+  #advancedSearch
+  {
+    text-align: center;
+    display: none;
+  }
+  #input
+  {
+    width: 25%;
+    font-size: large;
+  }
+  .button
+  {
+    border-radius: 10%;
+    font-size: large;
+  }
+  #history
+  {
+    text-align: left;
+    font-size: large;
+    width: 25%;
+  }
+  #historyContainer
+  {
+    text-align: center;
+  }
+  body
+  {
+    background-color: lightblue;
+    margin: 0px 0px 0px 0px;
+  }
+  h1
+  {
+    margin: 0px 0px 0px 0px;
+    text-align: center;
+    background-color: lightgrey;
+    width: 100%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+  }
+  input
+  {
+    font-size: large;
+  }
+
+  </style>
+  <script type="text/javascript">
+    
+    //initialize 
+    function initialize()
+    {
+      historyArr = [];
+    }
+
+
+    //search NASA images with current inputs
+    function search()
+    {
+      //clear previous search results
+      document.getElementById('content').innerHTML = "";
+
+      //get input values
+      var key = document.getElementById('search').value;
+      var location = document.getElementById('location').value;
+      var year1 = document.getElementById('year1').value;
+      var year2 = document.getElementById('year2').value;
+      var photographer = document.getElementById('photographer').value;
+
+      //create the json request
+      var keyJ = key;
+      var locationJ = location;
+      var year1J = year1;
+      var year2J = year2;
+      var photographerJ = photographer;
+      if(keyJ.length!=0)
+        keyJ="q="+keyJ+"&";
+      if(locationJ.length!=0)
+        locationJ="location="+locationJ+"&";
+      if(year1J.length!=0)
+        year1J="year_start="+year1J+"&";
+      if(year2J.length!=0)
+        year2J="year_end="+year2J+"&";
+      if(photographerJ.length!=0)
+        photographerJ="photographer="+photographerJ+"&";
+      var json = "https://images-api.nasa.gov/search?"+keyJ+locationJ+year1J+year2J+photographerJ+"media_type=image";
+
+      //log the request for debugging
+      console.log("JSON: "+json);
+
+      //fetch the json request
+      fetch(json)
+        .then(response => response.json())
+        .then(function(data){
+
+        //log the fetched data for debugging
+        console.log(data);
+
+        //display the fetched data
+        for(i=0; i<data.collection.items.length; i++)
+        {
+          //extract single item
+          var item = data.collection.items[i];
+
+          //get item details
+          var imgSrc = item.links[0].href;
+          var description = item.data[0].description.trim();
+          var date = item.data[0].date_created.substring(0,10);
+          var title = item.data[0].title;
+
+          //create the image tag
+          var img = "<img class='pictures' src=\'"+imgSrc+"\'/>";
+
+
+          //create the text tags
+          var descriptionDIV = "<div class='textDIV'>Description: "+description+"</div><br/>";
+          var dateDIV = "<div class='textDIV'>Date: "+date+"</div><br/>";
+          var titleDIV = "<div class='textDIV'>Title: "+title+"</div><br/>";
+          var link = "<a href=\'"+imgSrc+"\''>Open Picture</a>"
+          
+          //group the text tags
+          var descriptionHover = "<div class='hoverDIV' onmouseover='over(this)' onmouseout='out(this)'>"+titleDIV+dateDIV+descriptionDIV+link+"</div>";
+
+          //create the final container tag
+          var span = "<span class='item'>"+img+descriptionHover+"</span><br/>";
+
+          //display the tag
+          document.getElementById('content').innerHTML += span;
+        }
+        
+        //check if query was already searched
+        var add = true;
+        for(i=0; i<historyArr.length; i++)
+        {
+          if(historyArr[i][0]==key && historyArr[i][1]==location && historyArr[i][2]==year1 && historyArr[i][3]==year2 && historyArr[i][4]==photographer)
+            add = false;
+        }
+
+        //add to history if query wasn't searched
+        if(add)
+        {
+
+          //add record to history array
+          var currentQuery = [key,location,year1,year2,photographer];
+          historyArr.push(currentQuery);
+
+          //create tag for the search history drop-down
+          index = historyArr.length-1;
+          var tag = "<option value="+index+">"+key+" "+location+" "+year1+" "+year2+" "+photographer+"</option>";
+
+          //add the tag to the drop-down
+          document.getElementById('history').innerHTML += tag;
+        }
+
+        })
+        .catch(err => {
+          
+          //fetch error
+          document.getElementById('content').innerHTML += "Search failed.";
+
+        })
+
+    }
+
+    //display picture info when mouse over
+    function over(div)
+    {
+      div.style.opacity=1;
+    }
+
+    //hide picture info when mouse out
+    function out(div)
+    {
+      div.style.opacity=0;
+    }
+
+    //display the advanced menu
+    function advanced()
+    {
+      document.getElementById('advancedSearch').style.display = "block";
+    }
+
+    //fill the search criteria from the history selection
+    function fillSearch()
+    {
+      //get the index for search location from option value
+      var index = parseInt(document.getElementById('history').value);
+
+      //get input fields
+      var search = document.getElementById('search');
+      var location = document.getElementById('location');
+      var year1 = document.getElementById('year1');
+      var year2 = document.getElementById('year2');
+      var photographer = document.getElementById('photographer');
+
+      //input past search values
+      search.value = historyArr[index][0];
+      location.value = historyArr[index][1];
+      year1.value = historyArr[index][2];
+      year2.value = historyArr[index][3];
+      photographer.value = historyArr[index][4];
+
+      //search
+      this.search();
+    }
+
+  </script>
+</head>
+<body id="body" style="color:black" onload="initialize()">
+  <h1>NASA Images</h1>
+  <br/>
+  <div id="searchBar">
+    <input id="search" type="text" name="search" placeholder="Search"/>
+    <button class="button" onclick="search()">Search</button>
+    <button class="button" onclick="advanced()">Advanced Search Options</button>
+  </div>
+  <div id="advancedSearch">
+    <br/>
+    <input id="location" type="text" name="location" placeholder="Location"/>
+    <input id="year1" type="text" name="year1" placeholder="Start Year">
+    <input id="year2" type="text" name="year2" placeholder="End Year">
+    <input id="photographer" type="text" name="photographer" placeholder="Photographer">
+  </div>
+  <br/>
+  <div id="historyContainer">
+    <select id="history" onchange="fillSearch()">
+      <option value="" selected disabled hidden>Search History</option>
+    </select>
+  </div>
+  <br/>
+  <div id="content"></div>
+</body>
+</html>
