@@ -204,7 +204,7 @@
         .catch(err => {
           
           //fetch error
-          document.getElementById('content').innerHTML += "Search failed.";
+          document.getElementById('content').innerHTML += "Sorry, no results found based on your criteria.";
 
         })
 
@@ -226,6 +226,7 @@
     function advanced()
     {
       document.getElementById('advancedSearch').style.display = "block";
+      document.getElementById('advancedButton').style.display = "none";
     }
 
     //fill the search criteria from the history selection
@@ -267,14 +268,14 @@
   <div id="searchBar">
     <input id="search" type="text" name="search" placeholder="Search" onkeypress="handle(event)"/>
     <button class="button" onclick="search()">Search</button>
-    <button class="button" onclick="advanced()">Advanced Search Options</button>
+    <button id="advancedButton" class="button" onclick="advanced()">Show Advanced Filters</button>
   </div>
   <div id="advancedSearch">
     <br/>
-    <input id="location" type="text" name="location" placeholder="Location" onkeypress="handle(event)"/>
-    <input id="year1" type="text" name="year1" placeholder="Start Year" onkeypress="handle(event)"/>
-    <input id="year2" type="text" name="year2" placeholder="End Year" onkeypress="handle(event)"/>
-    <input id="photographer" type="text" name="photographer" placeholder="Photographer" onkeypress="handle(event)"/>
+    <input id="location" type="text" name="location" size="10" placeholder="Location" onkeypress="handle(event)"/>
+    <input id="year1" type="text" name="year1" size="5" placeholder="Start Year" onkeypress="handle(event)"/>
+    <input id="year2" type="text" name="year2" size="5" placeholder="End Year" onkeypress="handle(event)"/>
+    <input id="photographer" type="text" name="photographer" size="10" placeholder="Photographer" onkeypress="handle(event)"/>
   </div>
   <br/>
   <div id="historyContainer">
