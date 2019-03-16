@@ -94,6 +94,11 @@
     function initialize()
     {
       historyArr = [];
+      document.getElementById('search').value = "";
+      document.getElementById('location').value = "";
+      document.getElementById('year1').value = "";
+      document.getElementById('year2').value = "";
+      document.getElementById('photographer').value = "";
     }
 
 
@@ -159,7 +164,7 @@
           var descriptionDIV = "<div class='textDIV'>Description: "+description+"</div><br/>";
           var dateDIV = "<div class='textDIV'>Date: "+date+"</div><br/>";
           var titleDIV = "<div class='textDIV'>Title: "+title+"</div><br/>";
-          var link = "<a href=\'"+imgSrc+"\''>Open Picture</a>"
+          var link = "<a href=\'"+imgSrc+"\' target='_blank'>Open Picture</a>"
           
           //group the text tags
           var descriptionHover = "<div class='hoverDIV' onmouseover='over(this)' onmouseout='out(this)'>"+titleDIV+dateDIV+descriptionDIV+link+"</div>";
