@@ -252,22 +252,29 @@
       this.search();
     }
 
+    //search on enter press
+    function handle(event)
+    {
+    	if(event.keyCode == 13)
+    		search();
+    }
+
   </script>
 </head>
 <body id="body" style="color:black" onload="initialize()">
   <h1>NASA Images</h1>
   <br/>
   <div id="searchBar">
-    <input id="search" type="text" name="search" placeholder="Search"/>
+    <input id="search" type="text" name="search" placeholder="Search" onkeypress="handle(event)"/>
     <button class="button" onclick="search()">Search</button>
     <button class="button" onclick="advanced()">Advanced Search Options</button>
   </div>
   <div id="advancedSearch">
     <br/>
-    <input id="location" type="text" name="location" placeholder="Location"/>
-    <input id="year1" type="text" name="year1" placeholder="Start Year">
-    <input id="year2" type="text" name="year2" placeholder="End Year">
-    <input id="photographer" type="text" name="photographer" placeholder="Photographer">
+    <input id="location" type="text" name="location" placeholder="Location" onkeypress="handle(event)"/>
+    <input id="year1" type="text" name="year1" placeholder="Start Year" onkeypress="handle(event)"/>
+    <input id="year2" type="text" name="year2" placeholder="End Year" onkeypress="handle(event)"/>
+    <input id="photographer" type="text" name="photographer" placeholder="Photographer" onkeypress="handle(event)"/>
   </div>
   <br/>
   <div id="historyContainer">
