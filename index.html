@@ -68,6 +68,11 @@
   {
     text-align: center;
   }
+  .info
+  {
+  	text-align: center;
+  	font-size: large;
+  }
   body
   {
     background-color: lightblue;
@@ -99,6 +104,7 @@
       document.getElementById('year1').value = "";
       document.getElementById('year2').value = "";
       document.getElementById('photographer').value = "";
+      search();
     }
 
 
@@ -183,6 +189,10 @@
           if(historyArr[i][0]==key && historyArr[i][1]==location && historyArr[i][2]==year1 && historyArr[i][3]==year2 && historyArr[i][4]==photographer)
             add = false;
         }
+
+        //cheach if search is empty
+        if(key=="" && location=="" && year1=="" && year2=="" && photographer=="")
+        	add = false;
 
         //add to history if query wasn't searched
         if(add)
@@ -283,6 +293,8 @@
       <option value="" selected disabled hidden>Search History</option>
     </select>
   </div>
+  <br/>
+  <div class="info">Hover over an image for details.</div>
   <br/>
   <div id="content"></div>
 </body>
